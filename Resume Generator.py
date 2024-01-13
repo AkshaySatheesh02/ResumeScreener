@@ -34,8 +34,56 @@ def read_pdf_file(file):
     pdf_data_uri = f'data:application/pdf;base64,{pdf_base64}'
 
     return pdf_data_uri
+#background: url(data:image/{side_bg_ext};base64,{base64.b64encode(open(side_bg, "rb").read()).decode()});
+def sidebar_bg(side_bg):
 
+   side_bg_ext = 'png'
 
+   st.markdown(
+      f"""
+      <style>
+      [data-testid="stSidebar"] > div:first-child {{
+        background-color: #1f1652;
+        
+        
+      }}
+      </style>
+      """,
+      unsafe_allow_html=True,
+      )
+
+def get_base64(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+def set_background(png_file):
+    bin_str = get_base64(png_file)
+    page_bg_img = '''
+    <style>
+    .stApp {
+    background-image: url("data:image/png;base64,%s");
+    background-size: cover;
+    }
+    </style>
+    ''' % bin_str
+    st.markdown(page_bg_img, unsafe_allow_html=True) 
+
+def topbar(topbar):
+
+   img_ext = 'png'
+   bin_str = get_base64(topbar)
+   st.markdown(
+      f"""
+      <style>
+      header.css-k0sv6k.e8zbici2 {{
+          background: url(data:image/{img_ext};base64,{bin_str});
+      }}
+      </style>
+        """,
+      unsafe_allow_html=True,
+      )      
+   
 def main():
     st.set_page_config(
         page_title="Enter your Resume details",
@@ -43,6 +91,31 @@ def main():
     )
 
     st.title("Resume Generator")
+
+    line_html = '''
+    <hr style="
+        border: none;
+        height: 2px;
+        background-color:  #E5CCFF;
+        ">
+    '''
+
+
+    # Display the colored line using st.markdown
+    st.markdown(line_html, unsafe_allow_html=True)
+    sidebar_bg(r"pages/2.gif")
+    set_background(r"pages/3.gif")
+    topbar(r"pages/Home.png")
+    
+    st.markdown('<style>' +\
+            'div.stMarkdown div.css-5rimss { color: #E5CCFF; }' +\
+            'label.css-81oif8 { color: #E5CCFF; font-size:16px }' +\
+            'div.css-zt5igj {font-size:50}'+\
+            'div.stMarkdown span.css-10trblm {  color: #E5CCFF; }' +\
+            'div.css-8u98yl section.css-vjj2ce { background-color: #E5CCFF;  color: black}' +\
+            'span.css-pkbazv { color: #E5CCFF;}'+\
+            'span.css-17lntkn { color:#E5CCFF;}'+\
+            '</style>', unsafe_allow_html=True)
 
     name = st.text_input("Name:")
     contact_info = st.text_area("Contact Information:")
@@ -70,6 +143,13 @@ def main():
             image_bytes = uploaded_image.read()
             pdf_filename = create_pdf(data, image_bytes)
             st.success("PDF generated successfully!")
+            st.download_button(
+                label="Download PDF",
+                data=read_pdf_file(pdf_filename),
+                file_name="resume.pdf",
+                key="download_button",
+                help="Click to download the generated PDF file."
+            )
         else:
             st.warning("Please upload an image before generating the PDF.")
 
@@ -80,7 +160,7 @@ def main():
 
 
 def create_pdf(data, image):
-    pdf_filename = "./Resumes/resume.pdf"
+    pdf_filename = "resume.pdf"
 
     # Create PDF document
     c = canvas.Canvas(pdf_filename, pagesize=letter)
