@@ -1,7 +1,6 @@
 google_api_python_client==2.111.0
 nltk==3.7
 pdfplumber==0.10.3
-Pillow==9.2.0
 Pillow==10.2.0
 reportlab==4.0.8
 streamlit==1.22.0
