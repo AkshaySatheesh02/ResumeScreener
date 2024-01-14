@@ -121,7 +121,7 @@ def main():
 
     name = st.text_input("Name:")
     contact_info = st.text_area("Contact Information:")
-    uploaded_image = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
+    uploaded_image = st.file_uploader("Upload your image", type=["jpg", "png", "jpeg"])
     description = st.text_area("Brief Summary:")
 
     # Additional Fields
